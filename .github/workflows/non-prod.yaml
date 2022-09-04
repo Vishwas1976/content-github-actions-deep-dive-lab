@@ -1,0 +1,30 @@
+name: non prod releases
+on:
+  push:
+    branches:
+      - feature*
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      BUCKET_NAME: 'cfst-3457-fbd126cf23779388b74e1cffe-nonprodbucket-1x854k0df4wqm'
+    steps:
+      - name: checkout code 
+        uses: actions/checkout@v2.3.4
+      - name: aws setup
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: setup nodejs 
+        uses: actions/setup-node@v2.1.3
+        with:
+          node-version: 14
+      - name: build-site
+        run: |
+          npm ci
+          npm run build
+      - name: upload to s3
+        run: |
+          aws s3 cp public s3://${{ env.BUCKET_NAME }} --recursive --acl public-read
