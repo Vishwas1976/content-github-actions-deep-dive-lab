@@ -6,9 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     env:
-      BUCKET_NAME: cfst-3457-ab78cd85a258d917116d9b8e4-nonprodbucket-1282t660xits9
+      BUCKET_NAME: 'cfst-3457-ab78cd85a258d917116d9b8e4-nonprodbucket-1282t660xits9'
     steps:
       - name: checkout code 
         uses: actions/checkout@v2.3.4
@@ -28,4 +27,4 @@ jobs:
           npm run build
       - name: upload to s3
         run: |
-          aws s3 cp public s3://${{ BUCKET_NAME }} --recursive --public-read
+          aws s3 cp public s3://${{ env.BUCKET_NAME }} --recursive --public-read
